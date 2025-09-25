@@ -1,0 +1,24 @@
+package br.inventory.control.api.repository;
+
+import br.inventory.control.api.model.StockMovement;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+
+public interface StockMovementRepository extends JpaRepository<StockMovement, Long> {
+    @Query("SELECT sm.product.name, COUNT(sm) as movementCount " +
+            "FROM StockMovement sm " +
+            "WHERE sm.type = com.example.inventorycontrol.model.MovementType.ENTRY " +
+            "GROUP BY sm.product.name " +
+            "ORDER BY movementCount DESC")
+    List<Object[]> findTopEntryProducts();
+
+    @Query("SELECT sm.product.name, COUNT(sm) as movementCount " +
+            "FROM StockMovement sm " +
+            "WHERE sm.type = com.example.inventorycontrol.model.MovementType.EXIT " +
+            "GROUP BY sm.product.name " +
+            "ORDER BY movementCount DESC")
+    List<Object[]> findTopExitProducts();
+}
