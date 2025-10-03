@@ -17,6 +17,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Modifying
     @Query("UPDATE Product p SET p.unitPrice = p.unitPrice * (1 + :percentage / 100.0)")
     void adjustPriceByPercentage(@Param("percentage") BigDecimal percentage);
+    @Query("SELECT new br.inventory.control.api.dto.ProductCountByCategoryDTO(p.category.name, COUNT(p)) FROM Product p GROUP BY p.category.name")
+    List<br.inventory.control.api.dto.ProductCountByCategoryDTO> countProductsByCategory();
+
+    @Query("SELECT new br.inventory.control.api.dto.ProductCountByCategoryDTO(p.category.name, COUNT(p)) FROM Product p WHERE p.category IN :categories GROUP BY p.category.name")
+    List<br.inventory.control.api.dto.ProductCountByCategoryDTO> countProductsByCategoryFiltered(@Param("categories") Collection<Category> categories);
 
     List<Product> findByQuantityInStockLessThan(int minStockQuantity);
     List<Product> findByQuantityInStockLessThanAndCategoryIn(int minStockQuantity, Collection<Category> categories);
