@@ -13,6 +13,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U inventory_admin -d inventory_control_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     container_name: inventory_api
@@ -24,7 +29,8 @@ services:
       SPRING_DATASOURCE_USERNAME: inventory_admin
       SPRING_DATASOURCE_PASSWORD: controleestoquepass
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 volumes:
   postgres_data:
