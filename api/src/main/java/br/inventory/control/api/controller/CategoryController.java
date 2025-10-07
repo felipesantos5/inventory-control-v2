@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
 @Tag(name = "Categories", description = "Endpoints for managing categories (ADMIN only)")
-@SecurityRequirement(name = "bearerAuth") // Exige autenticação JWT para todos os endpoints neste controller
-@PreAuthorize("hasAuthority('ADMIN')") // Garante que apenas ADMINs possam acessar
+@SecurityRequirement(name = "bearerAuth")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class CategoryController {
 
     private final CategoryService categoryService;
