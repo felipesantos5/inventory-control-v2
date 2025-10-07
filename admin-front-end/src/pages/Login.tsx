@@ -81,7 +81,6 @@ export function Login() {
               <Input
                 id="email"
                 type="email"
-                placeholder="seu@email.com"
                 {...register("email")}
                 className={errors.email ? "border-red-500" : ""}
               />
@@ -96,7 +95,6 @@ export function Login() {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
                   {...register("password")}
                   className={errors.password ? "border-red-500 pr-10" : "pr-10"}
                 />
