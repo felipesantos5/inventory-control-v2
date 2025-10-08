@@ -7,7 +7,8 @@ interface LoginRequest {
 }
 
 interface LoginResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export const authService = {

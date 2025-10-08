@@ -5,10 +5,11 @@ import type { Category, CreateCategoryData } from "@/types/category";
 
 const getAuthHeaders = () => {
   const { token } = useAuth.getState();
+
   return {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token.accessToken}`,
     },
   };
 };
