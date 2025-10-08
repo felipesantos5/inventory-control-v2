@@ -2,20 +2,14 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CreateProductModal } from "@/components/product/CreateProductModal";
 import { EditProductModal } from "@/components/product/EditProductModal";
 import { DeleteConfirmModal } from "@/components/DeleteConfirmModal";
 import { AdjustPriceModal } from "@/components/product/AdjustPriceModal";
 import { productsService } from "@/services/products";
 import type { Product } from "@/types/product";
+import { StockMovementModal } from "@/components/product/StockMovementModal";
 
 export function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -39,11 +33,7 @@ export function Products() {
   };
 
   const handleProductUpdated = (updatedProduct: Product) => {
-    setProducts(
-      products.map((product) =>
-        product.id === updatedProduct.id ? updatedProduct : product
-      )
-    );
+    setProducts(products.map((product) => (product.id === updatedProduct.id ? updatedProduct : product)));
   };
 
   const handleDelete = async (id: string) => {
@@ -61,6 +51,10 @@ export function Products() {
       style: "currency",
       currency: "BRL",
     }).format(price);
+  };
+
+  const handleMovementCompleted = () => {
+    loadProducts(); // Recarrega a lista após movimentação de estoque
   };
 
   useEffect(() => {
@@ -113,22 +107,12 @@ export function Products() {
               ) : (
                 products.map((product) => (
                   <TableRow key={product.id}>
-                    <TableCell className="font-mono text-sm">
-                      {product.id}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {product.name}
-                    </TableCell>
+                    <TableCell className="font-mono text-sm">{product.id}</TableCell>
+                    <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell>{formatPrice(product.unitPrice)}</TableCell>
                     <TableCell>{product.unitOfMeasure}</TableCell>
                     <TableCell>
-                      <span
-                        className={`${
-                          product.quantityInStock <= product.minStockQuantity
-                            ? "text-red-600 font-semibold"
-                            : ""
-                        }`}
-                      >
+                      <span className={`${product.quantityInStock <= product.minStockQuantity ? "text-red-600 font-semibold" : ""}`}>
                         {product.quantityInStock}
                       </span>
                     </TableCell>
@@ -138,15 +122,9 @@ export function Products() {
                     <TableCell>{product.categoryId}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <EditProductModal
-                          product={product}
-                          onUpdate={handleProductUpdated}
-                        />
-                        <DeleteConfirmModal
-                          title="Excluir Produto"
-                          itemName={product.name}
-                          onConfirm={() => handleDelete(product.id)}
-                        />
+                        <StockMovementModal product={product} onMovementCompleted={handleMovementCompleted} />
+                        <EditProductModal product={product} onUpdate={handleProductUpdated} />
+                        <DeleteConfirmModal title="Excluir Produto" itemName={product.name} onConfirm={() => handleDelete(product.id)} />
                       </div>
                     </TableCell>
                   </TableRow>
