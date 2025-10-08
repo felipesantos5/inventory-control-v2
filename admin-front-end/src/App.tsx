@@ -1,10 +1,14 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth, useAuthInterceptors } from "@/hooks/useAuth";
 import { Login } from "@/pages/Login";
 import { Categories } from "./pages/Categories";
+import Layout from "./layout";
+import { Products } from "./pages/Products";
 
 function App() {
   const { isAuthenticated } = useAuth();
+
+  useAuthInterceptors();
 
   if (!isAuthenticated) {
     return (
@@ -17,9 +21,12 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/categories" element={<Categories />} />
-      <Route path="/" element={<Navigate to="/dashboard" />} />
-      <Route path="*" element={<Navigate to="/dashboard" />} />
+      <Route element={<Layout />}>
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/" element={<Navigate to="/products" />} />
+        <Route path="*" element={<Navigate to="/products" />} />
+      </Route>
     </Routes>
   );
 }
