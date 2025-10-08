@@ -15,7 +15,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/hooks/useAuth";
 import { authService } from "@/services/auth";
 
@@ -48,7 +47,7 @@ export function Login() {
 
     try {
       const response = await authService.login(data);
-      setToken(response.token);
+      setToken(response);
       navigate("/dashboard");
     } catch (err: any) {
       setError(err.response?.data?.message || "Erro ao fazer login");
