@@ -114,9 +114,9 @@ export function Categories() {
   }
 
   return (
-    <div className="space-y-6">
+    <section>
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Categorias</h1>
+        <h1 className="text-3xl font-bold mb-4">Categorias</h1>
 
         <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
           <DialogTrigger asChild>
@@ -267,6 +267,6 @@ export function Categories() {
           </Table>
         </CardContent>
       </Card>
-    </div>
+    </section>
   );
 }
