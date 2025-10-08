@@ -1,4 +1,4 @@
-import { Inbox, ShoppingBasket } from "lucide-react";
+import { Archive, ArrowLeftRight, BookMarked, Inbox, ShoppingBasket } from "lucide-react";
 import logo from "../assets/logo.png";
 
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
@@ -11,12 +11,17 @@ const items = [
   {
     title: "Categorias",
     url: "/categories",
-    icon: Inbox,
+    icon: BookMarked,
   },
   {
     title: "estoque",
     url: "/stock",
-    icon: Inbox,
+    icon: Archive,
+  },
+  {
+    title: "movimentos",
+    url: "/movimenets",
+    icon: ArrowLeftRight,
   },
 ];
 
