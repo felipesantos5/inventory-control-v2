@@ -172,3 +172,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* styles custom */
+
+.container-custom {
+  width: calc(100% - 64px);
+  margin: 0 auto;
+}
