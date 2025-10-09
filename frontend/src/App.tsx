@@ -7,6 +7,7 @@ import { Products } from "./pages/Products";
 import { Stock } from "./pages/Stock";
 import { Movements } from "./pages/Movements";
 import { LowStock } from "./pages/LowStock";
+import { UsersPage } from "./pages/Users";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -30,6 +31,7 @@ function App() {
         <Route path="/stock" element={<Stock />} />
         <Route path="/movimenets" element={<Movements />} />
         <Route path="/low-stock" element={<LowStock />} />
+        <Route path="/users" element={<UsersPage />} />
         <Route path="/" element={<Navigate to="/products" />} />
         <Route path="*" element={<Navigate to="/products" />} />
       </Route>
