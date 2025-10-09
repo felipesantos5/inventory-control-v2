@@ -5,6 +5,7 @@ import {
   BookMarked,
   LogOut,
   ShoppingBasket,
+  User,
 } from "lucide-react";
 import logo from "../assets/logo.png";
 
@@ -44,6 +45,11 @@ const items = [
     title: "Baixo estoque",
     url: "/low-stock",
     icon: ArchiveX,
+  },
+  {
+    title: "Usuários",
+    url: "/users",
+    icon: User,
   },
 ];
 
