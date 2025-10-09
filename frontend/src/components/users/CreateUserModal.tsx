@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Plus, Loader2, User as UserIcon, Mail, Tag } from "lucide-react";
+import { Plus, Loader2, User as UserIcon, Mail, Tag, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -34,6 +34,7 @@ import { useEffect } from "react";
 const createUserSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   email: z.string().email("Email inválido"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"), // Adicionar esta linha
   categoryIds: z.array(z.number()).min(1, "Selecione pelo menos uma categoria"),
 });
 
@@ -52,6 +53,7 @@ export function CreateUserModal({ onUserCreated }: CreateUserModalProps) {
     defaultValues: {
       name: "",
       email: "",
+      password: "",
       categoryIds: [],
     },
   });
@@ -168,6 +170,27 @@ export function CreateUserModal({ onUserCreated }: CreateUserModalProps) {
 
             <FormField
               control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    <Lock className="h-4 w-4" />
+                    Senha
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Digite a senha"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="categoryIds"
               render={() => (
                 <FormItem>
@@ -177,7 +200,7 @@ export function CreateUserModal({ onUserCreated }: CreateUserModalProps) {
                   </FormLabel>
                   <FormControl>
                     <Card>
-                      <CardContent className="pt-4">
+                      <CardContent>
                         {loadingCategories ? (
                           <div className="flex items-center justify-center py-4">
                             <Loader2 className="h-4 w-4 animate-spin mr-2" />

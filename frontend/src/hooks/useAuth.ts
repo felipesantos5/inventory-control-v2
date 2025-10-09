@@ -1,121 +1,165 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useEffect } from "react";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 import { API_URL } from "@/config/api";
-import type { DecodedToken, AuthTokens } from "@/types/auth";
 
-interface AuthStore {
-  token: {
-    accessToken: string | null;
-    refreshToken: string | null;
-  };
-  isAuthenticated: boolean;
-  isRefreshing: boolean;
-  setToken: (tokens: AuthTokens) => void;
-  logout: () => void;
-  refreshTokens: () => Promise<boolean>;
-  isTokenValid: (token: string) => boolean;
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+  // Adicione outros campos que vêm no token
 }
 
-export const useAuth = create<AuthStore>()(
+interface Token {
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface AuthState {
+  token: Token | null;
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => void;
+  setToken: (token: Token) => void;
+  refreshTokens: () => Promise<boolean>;
+  isTokenValid: (token: string) => boolean;
+  getUserFromToken: (token: string) => User | null;
+}
+
+export const useAuth = create<AuthState>()(
   persist(
     (set, get) => ({
-      token: {
-        accessToken: null,
-        refreshToken: null,
-      },
+      token: null,
+      user: null,
       isAuthenticated: false,
-      isRefreshing: false,
 
-      setToken: (tokens: AuthTokens) => {
-        set({
-          token: {
-            accessToken: tokens.accessToken,
-            refreshToken: tokens.refreshToken,
-          },
-          isAuthenticated: true,
-        });
-      },
+      getUserFromToken: (token: string): User | null => {
+        try {
+          const decoded = jwtDecode<any>(token);
 
-      logout: () => {
-        set({
-          token: {
-            accessToken: null,
-            refreshToken: null,
-          },
-          isAuthenticated: false,
-          isRefreshing: false,
-        });
+          // TEMPORÁRIO - para ver TODOS os campos do JWT
+          console.log("Campos disponíveis no JWT:", Object.keys(decoded));
+          console.log("JWT completo:", decoded);
+
+          const email = decoded.id; // Sabemos que id contém o email
+          const name = decoded.name || decoded.username || email?.split("@")[0];
+
+          return {
+            id: email,
+            name:
+              name === "Temp Name" ? email?.split("@")[0] || "Usuário" : name,
+            email: email,
+            role: decoded.role || "user",
+          };
+        } catch (error) {
+          console.error("Erro ao decodificar token:", error);
+          return null;
+        }
       },
 
       isTokenValid: (token: string): boolean => {
         try {
-          const decoded = jwtDecode<DecodedToken>(token);
-          // Adiciona uma margem de 5 minutos antes da expiração
-          return decoded.exp * 1000 > Date.now() + 5 * 60 * 1000;
+          const decoded = jwtDecode<any>(token);
+          const currentTime = Date.now() / 1000;
+
+          // Verifica se o token não expirou (com margem de 5 minutos)
+          return decoded.exp > currentTime + 300;
         } catch {
           return false;
         }
       },
 
-      refreshTokens: async (): Promise<boolean> => {
-        const { token, isRefreshing } = get();
+      setToken: (token: Token) => {
+        const user = get().getUserFromToken(token.accessToken);
+        set({
+          token,
+          user,
+          isAuthenticated: true,
+        });
+      },
 
-        if (!token?.refreshToken || isRefreshing) {
-          return false;
-        }
-
-        set({ isRefreshing: true });
-
+      login: async (email: string, password: string): Promise<boolean> => {
         try {
-          const response = await axios.post(
-            `${API_URL}/auth/refresh`,
-            {
-              refreshToken: token.refreshToken,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+          const response = await axios.post(`${API_URL}/auth/login`, {
+            email,
+            password,
+          });
 
-          const newTokens: AuthTokens = {
-            accessToken: response.data.accessToken,
-            refreshToken: response.data.refreshToken,
-          };
+          const token: Token = response.data;
+          const user = get().getUserFromToken(token.accessToken);
 
-          // Atualiza os tokens
           set({
-            token: {
-              accessToken: newTokens.accessToken,
-              refreshToken: newTokens.refreshToken,
-            },
+            token,
+            user,
             isAuthenticated: true,
-            isRefreshing: false,
           });
 
           return true;
         } catch (error) {
-          console.error("Erro ao renovar tokens:", error);
+          console.error("Erro no login:", error);
+          return false;
+        }
+      },
 
-          // Se o refresh falhar, faz logout
+      refreshTokens: async (): Promise<boolean> => {
+        try {
+          const { token } = get();
+          if (!token?.refreshToken) return false;
+
+          const response = await axios.post(`${API_URL}/auth/refresh`, {
+            refreshToken: token.refreshToken,
+          });
+
+          const newToken: Token = response.data;
+          const user = get().getUserFromToken(newToken.accessToken);
+
+          set({
+            token: newToken,
+            user,
+            isAuthenticated: true,
+          });
+
+          return true;
+        } catch (error) {
+          console.error("Erro ao renovar token:", error);
           get().logout();
           return false;
         }
       },
+
+      logout: () => {
+        set({
+          token: null,
+          user: null,
+          isAuthenticated: false,
+        });
+      },
     }),
     {
       name: "auth-storage",
+      // Só persiste token, user é recalculado a partir do token
+      partialize: (state) => ({
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+      }),
+      // Rehydrate user quando carrega do storage
+      onRehydrateStorage: () => (state) => {
+        if (state?.token?.accessToken) {
+          const user = state.getUserFromToken(state.token.accessToken);
+          state.user = user;
+        }
+      },
     }
   )
 );
 
-// Hook para configurar interceptors
+// Hook para configurar interceptors do axios
 export const useAuthInterceptors = () => {
-  const { token, isTokenValid, refreshTokens } = useAuth();
+  const { token, isTokenValid, refreshTokens, logout } = useAuth();
 
   useEffect(() => {
     const requestInterceptor = axios.interceptors.request.use(
@@ -163,6 +207,8 @@ export const useAuthInterceptors = () => {
               originalRequest.headers.Authorization = `Bearer ${newToken.accessToken}`;
               return axios(originalRequest);
             }
+          } else {
+            logout();
           }
         }
 
@@ -170,36 +216,9 @@ export const useAuthInterceptors = () => {
       }
     );
 
-    // Cleanup dos interceptors
     return () => {
       axios.interceptors.request.eject(requestInterceptor);
       axios.interceptors.response.eject(responseInterceptor);
     };
-  }, [token, isTokenValid, refreshTokens]);
-
-  // Verifica os tokens na inicialização
-  useEffect(() => {
-    if (token?.accessToken) {
-      if (!isTokenValid(token.accessToken)) {
-        // Token expirado, tenta renovar
-        refreshTokens();
-      }
-    }
-  }, []);
-
-  // Auto-refresh periódico (opcional)
-  useEffect(() => {
-    if (!token?.accessToken) return;
-
-    const checkTokenExpiry = () => {
-      if (token?.accessToken && !isTokenValid(token.accessToken)) {
-        refreshTokens();
-      }
-    };
-
-    // Verifica a cada 10 minutos
-    const interval = setInterval(checkTokenExpiry, 10 * 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, [token, isTokenValid, refreshTokens]);
+  }, [token, isTokenValid, refreshTokens, logout]);
 };
