@@ -13,6 +13,8 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryIn(Collection<Category> categories);
+    List<Product> findAllByOrderByNameAsc();
+    long countByCategory(Category category);
 
     @Modifying
     @Query("UPDATE Product p SET p.unitPrice = p.unitPrice * (1 + :percentage / 100.0)")

@@ -1,5 +1,6 @@
 package br.inventory.control.api.service;
 
+import br.inventory.control.api.dto.CategoryDTO;
 import br.inventory.control.api.dto.UserDTO;
 import br.inventory.control.api.exception.ResourceNotFoundException;
 import br.inventory.control.api.model.Category;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,12 +27,13 @@ public class UserService {
     private final CategoryRepository categoryRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public UserDTO createUser(UserDTO userDTO) {
         User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRole(Role.EMPLOYEE); // Somente ADMIN pode criar EMPLOYEEs
+        user.setRole(Role.EMPLOYEE);
 
         if (userDTO.getCategoryIds() != null && !userDTO.getCategoryIds().isEmpty()) {
             Set<Category> categories = new HashSet<>(categoryRepository.findAllById(userDTO.getCategoryIds()));
@@ -41,8 +44,32 @@ public class UserService {
         return toDTO(savedUser);
     }
 
+    @Transactional(readOnly = true)
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+        userRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Set<CategoryDTO> getMyCategories() {
+        User user = getAuthenticatedUser();
+        return user.getAllowedCategories().stream()
+                .map(category -> {
+                    CategoryDTO dto = new CategoryDTO();
+                    dto.setId(category.getId());
+                    dto.setName(category.getName());
+                    dto.setSize(category.getSize());
+                    dto.setPackaging(category.getPackaging());
+                    return dto;
+                })
+                .collect(Collectors.toSet());
     }
 
     public User getAuthenticatedUser() {

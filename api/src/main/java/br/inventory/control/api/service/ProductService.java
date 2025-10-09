@@ -2,6 +2,7 @@ package br.inventory.control.api.service;
 
 import br.inventory.control.api.dto.PriceAdjustmentDTO;
 import br.inventory.control.api.dto.ProductDTO;
+import br.inventory.control.api.dto.StockMovementResponseDTO;
 import br.inventory.control.api.exception.ResourceNotFoundException;
 import br.inventory.control.api.exception.UnauthorizedOperationException;
 import br.inventory.control.api.model.Category;
@@ -10,6 +11,7 @@ import br.inventory.control.api.model.Role;
 import br.inventory.control.api.model.User;
 import br.inventory.control.api.repository.CategoryRepository;
 import br.inventory.control.api.repository.ProductRepository;
+import br.inventory.control.api.repository.StockMovementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final StockMovementRepository stockMovementRepository;
     private final UserService userService;
 
     @Transactional(readOnly = true)
@@ -31,7 +34,7 @@ public class ProductService {
         List<Product> products;
 
         if (currentUser.getRole() == Role.ADMIN || currentUser.getAllowedCategories().isEmpty()) {
-            products = productRepository.findAll();
+            products = productRepository.findAllByOrderByNameAsc();
         } else {
             products = productRepository.findByCategoryIn(currentUser.getAllowedCategories());
         }
@@ -43,13 +46,24 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         checkPermission(product.getCategory());
-        return toDTO(product);
+        ProductDTO dto = toDTO(product);
+        dto.setMovements(stockMovementRepository.findByProductId(id).stream().map(mov ->
+                StockMovementResponseDTO.builder()
+                        .id(mov.getId())
+                        .productId(mov.getProduct().getId())
+                        .productName(mov.getProduct().getName())
+                        .movementDate(mov.getMovementDate())
+                        .quantity(mov.getQuantity())
+                        .type(mov.getType())
+                        .build()
+        ).collect(Collectors.toList()));
+        return dto;
     }
 
     @Transactional
     public ProductDTO createProduct(ProductDTO productDTO) {
-        Category category = categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + productDTO.getCategoryId()));
+        Category category = categoryRepository.findById(productDTO.getCategory().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + productDTO.getCategory().getId()));
         checkPermission(category);
         Product product = toEntity(productDTO);
         product.setCategory(category);
@@ -80,7 +94,12 @@ public class ProductService {
         dto.setQuantityInStock(product.getQuantityInStock());
         dto.setMinStockQuantity(product.getMinStockQuantity());
         dto.setMaxStockQuantity(product.getMaxStockQuantity());
-        dto.setCategoryId(product.getCategory().getId());
+
+        ProductDTO.CategoryInfo categoryInfo = new ProductDTO.CategoryInfo();
+        categoryInfo.setId(product.getCategory().getId());
+        categoryInfo.setName(product.getCategory().getName());
+        dto.setCategory(categoryInfo);
+
         return dto;
     }
 

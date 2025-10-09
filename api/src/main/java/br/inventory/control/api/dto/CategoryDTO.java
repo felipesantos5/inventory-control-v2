@@ -8,4 +8,5 @@ public class CategoryDTO {
     private String name;
     private String size;
     private String packaging;
+    private long productCount;
 }
