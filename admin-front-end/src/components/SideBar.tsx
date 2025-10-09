@@ -3,6 +3,7 @@ import {
   ArchiveX,
   ArrowLeftRight,
   BookMarked,
+  LogOut,
   ShoppingBasket,
 } from "lucide-react";
 import logo from "../assets/logo.png";
@@ -10,12 +11,14 @@ import logo from "../assets/logo.png";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "./ui/sidebar";
+import { useAuth } from "@/hooks/useAuth";
 const items = [
   {
     title: "Produtos",
@@ -45,13 +48,15 @@ const items = [
 ];
 
 export function SidebarCustom() {
+  const { logout } = useAuth();
+
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
           <img
             src={logo}
-            alt="logo pesados do agro"
+            alt="Logo controle de estoque"
             className="w-[50%] mx-auto"
           />
           <SidebarGroupContent>
@@ -60,7 +65,7 @@ export function SidebarCustom() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
-                      <item.icon />
+                      <item.icon className="w-5 h-5" />
                       <span>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
@@ -70,6 +75,17 @@ export function SidebarCustom() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={logout}>
+              <LogOut className="w-5 h-5" />
+              Sair
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
