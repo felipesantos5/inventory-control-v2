@@ -1,15 +1,8 @@
 import { useState, useEffect } from "react";
-import {
-  Activity,
-  TrendingUp,
-  ArrowUp,
-  ArrowDown,
-  RefreshCw,
-} from "lucide-react";
+import { Activity, TrendingUp, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { movementsService } from "@/services/movements";
 import type { TopMovementProducts } from "@/types/movement";
 
@@ -55,10 +48,6 @@ export function Movements() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Movimentações de Produtos</h1>
-        <Button onClick={loadMovements} variant="outline">
-          <RefreshCw className="mr-2 h-5 w-4" />
-          Atualizar
-        </Button>
       </div>
 
       {/* Cards de Resumo */}
@@ -227,110 +216,6 @@ export function Movements() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Comparativo */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5" />
-            Comparativo de Movimentações
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {movementsData ? (
-            <div className="space-y-6">
-              {/* Barras de Comparação */}
-              <div className="space-y-4">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-green-700 flex items-center gap-2">
-                      <ArrowUp className="h-5 w-4" />
-                      Entradas: {movementsData.topEntryProduct.productName}
-                    </span>
-                    <span className="text-sm font-bold text-green-600">
-                      {movementsData.topEntryProduct.movementCount}
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div
-                      className="bg-green-500 h-3 rounded-full transition-all duration-500"
-                      style={{
-                        width: `${
-                          (movementsData.topEntryProduct.movementCount /
-                            Math.max(
-                              movementsData.topEntryProduct.movementCount,
-                              movementsData.topExitProduct.movementCount
-                            )) *
-                          100
-                        }%`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-red-700 flex items-center gap-2">
-                      <ArrowDown className="h-5 w-4" />
-                      Saídas: {movementsData.topExitProduct.productName}
-                    </span>
-                    <span className="text-sm font-bold text-red-600">
-                      {movementsData.topExitProduct.movementCount}
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div
-                      className="bg-red-500 h-3 rounded-full transition-all duration-500"
-                      style={{
-                        width: `${
-                          (movementsData.topExitProduct.movementCount /
-                            Math.max(
-                              movementsData.topEntryProduct.movementCount,
-                              movementsData.topExitProduct.movementCount
-                            )) *
-                          100
-                        }%`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Insights */}
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                  <h4 className="font-medium text-blue-800 mb-2">💡 Insight</h4>
-                  <p className="text-sm text-blue-700">
-                    {movementsData.topEntryProduct.movementCount >
-                    movementsData.topExitProduct.movementCount
-                      ? "Mais entradas que saídas indicam crescimento do estoque."
-                      : movementsData.topEntryProduct.movementCount <
-                        movementsData.topExitProduct.movementCount
-                      ? "Mais saídas que entradas podem indicar alta demanda."
-                      : "Entradas e saídas equilibradas indicam fluxo estável."}
-                  </p>
-                </div>
-
-                <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
-                  <h4 className="font-medium text-amber-800 mb-2">
-                    📊 Recomendação
-                  </h4>
-                  <p className="text-sm text-amber-700">
-                    {movementsData.topExitProduct.movementCount >
-                    movementsData.topEntryProduct.movementCount
-                      ? `Monitore o estoque de "${movementsData.topExitProduct.productName}" para evitar ruptura.`
-                      : `"${movementsData.topEntryProduct.productName}" está com boa reposição de estoque.`}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              Nenhum dado de movimentação disponível
-            </div>
-          )}
-        </CardContent>
-      </Card>
     </div>
   );
 }

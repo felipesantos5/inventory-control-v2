@@ -1,15 +1,8 @@
 import { useState, useEffect } from "react";
-import {
-  Package,
-  TrendingUp,
-  AlertTriangle,
-  RefreshCw,
-  PackageCheck,
-} from "lucide-react";
+import { Package, TrendingUp, AlertTriangle, PackageCheck } from "lucide-react";
 import { toast } from "sonner";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -77,10 +70,6 @@ export function Stock() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Relatório de Estoque</h1>
-        <Button onClick={loadStockBalance} variant="outline">
-          <RefreshCw className="mr-2 h-5 w-4" />
-          Atualizar
-        </Button>
       </div>
 
       {/* Cards de Resumo */}
