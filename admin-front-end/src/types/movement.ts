@@ -4,5 +4,6 @@ export interface ProductMovement {
 }
 
 export interface TopMovementProducts {
-  [key: string]: ProductMovement;
+  topEntryProduct: ProductMovement;
+  topExitProduct: ProductMovement;
 }
