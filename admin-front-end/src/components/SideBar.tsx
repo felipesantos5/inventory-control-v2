@@ -1,15 +1,7 @@
-import { Inbox, ShoppingBasket } from "lucide-react";
+import { Archive, ArrowLeftRight, BookMarked, Inbox, ShoppingBasket } from "lucide-react";
 import logo from "../assets/logo.png";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "./ui/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
 const items = [
   {
     title: "Produtos",
@@ -19,7 +11,17 @@ const items = [
   {
     title: "Categorias",
     url: "/categories",
-    icon: Inbox,
+    icon: BookMarked,
+  },
+  {
+    title: "estoque",
+    url: "/stock",
+    icon: Archive,
+  },
+  {
+    title: "movimentos",
+    url: "/movimenets",
+    icon: ArrowLeftRight,
   },
 ];
 
@@ -28,11 +30,7 @@ export function SidebarCustom() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <img
-            src={logo}
-            alt="logo pesados do agro"
-            className="w-[50%] mx-auto"
-          />
+          <img src={logo} alt="logo pesados do agro" className="w-[50%] mx-auto" />
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
