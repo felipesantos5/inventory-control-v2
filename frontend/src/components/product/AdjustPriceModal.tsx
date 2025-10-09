@@ -131,7 +131,7 @@ export function AdjustPriceModal({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Calculator className="h-5 w-5" />
@@ -234,7 +234,7 @@ export function AdjustPriceModal({
                   Nenhum produto encontrado
                 </div>
               ) : (
-                <div className="space-y-3 max-h-[300px] overflow-y-auto">
+                <div className="space-y-3 max-h-[300px] overflow-y-auto pr-4">
                   {products.map((product, index) => {
                     const newPrice = calculateNewPrice(
                       product.unitPrice,
