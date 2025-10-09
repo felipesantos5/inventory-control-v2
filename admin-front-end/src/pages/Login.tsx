@@ -105,9 +105,9 @@ export function Login() {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
+                    <EyeOff className="h-5 w-4" />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <Eye className="h-5 w-4" />
                   )}
                 </Button>
               </div>
@@ -123,7 +123,7 @@ export function Login() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-5 w-5animate-spin" />
                   Entrando...
                 </>
               ) : (

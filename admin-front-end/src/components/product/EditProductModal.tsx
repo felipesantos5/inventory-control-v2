@@ -97,7 +97,7 @@ export function EditProductModal({
 
   const defaultTrigger = (
     <Button variant="outline" size="sm">
-      <Pencil className="h-4 w-4" />
+      <Pencil className="h-5 w-4" />
     </Button>
   );
 
@@ -261,7 +261,7 @@ export function EditProductModal({
               <Button type="submit" disabled={isUpdating}>
                 {isUpdating ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5animate-spin" />
                     Atualizando...
                   </>
                 ) : (

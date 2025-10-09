@@ -123,7 +123,7 @@ export function AdjustPriceModal({
 
   const defaultTrigger = (
     <Button variant="outline">
-      <Calculator className="mr-2 h-4 w-4" />
+      <Calculator className="mr-2 h-5 w-4" />
       Ajustar Preços
     </Button>
   );
@@ -183,7 +183,7 @@ export function AdjustPriceModal({
                       >
                         {isAdjusting ? (
                           <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <Loader2 className="mr-2 h-5 w-5animate-spin" />
                             Ajustando...
                           </>
                         ) : (
@@ -200,14 +200,14 @@ export function AdjustPriceModal({
                   <div className="flex items-center gap-2 text-sm font-medium">
                     {previewPercentage > 0 ? (
                       <>
-                        <TrendingUp className="h-4 w-4 text-green-600" />
+                        <TrendingUp className="h-5 w-5text-green-600" />
                         <span className="text-green-600">
                           Aumento de {previewPercentage}%
                         </span>
                       </>
                     ) : (
                       <>
-                        <TrendingDown className="h-4 w-4 text-red-600" />
+                        <TrendingDown className="h-5 w-5text-red-600" />
                         <span className="text-red-600">
                           Redução de {Math.abs(previewPercentage)}%
                         </span>
