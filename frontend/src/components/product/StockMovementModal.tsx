@@ -117,7 +117,7 @@ export function StockMovementModal({
                   <span className="font-medium">Produto:</span>
                   <p className="ml-1 text-muted-foreground">{product.name}</p>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div>
                   <div className="flex">
                     <span className="font-medium">Estoque Atual:</span>
                     <p
