@@ -40,7 +40,7 @@ export function DeleteConfirmModal({
 
   const defaultTrigger = (
     <Button variant="outline" size="sm">
-      <Trash2 className="h-4 w-4" />
+      <Trash2 className="h-5 w-4" />
     </Button>
   );
 
@@ -78,7 +78,7 @@ export function DeleteConfirmModal({
           >
             {isDeleting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-5 w-5animate-spin" />
                 Excluindo...
               </>
             ) : (

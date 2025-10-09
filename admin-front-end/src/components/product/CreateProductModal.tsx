@@ -84,7 +84,7 @@ export function CreateProductModal({
 
   const defaultTrigger = (
     <Button>
-      <Plus className="mr-2 h-4 w-4" />
+      <Plus className="mr-2 h-5 w-4" />
       Novo Produto
     </Button>
   );
@@ -250,7 +250,7 @@ export function CreateProductModal({
               <Button type="submit" disabled={isCreating}>
                 {isCreating ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5animate-spin" />
                     Criando...
                   </>
                 ) : (
