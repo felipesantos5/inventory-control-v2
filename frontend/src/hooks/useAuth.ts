@@ -6,11 +6,10 @@ import axios from "axios";
 import { API_URL } from "@/config/api";
 
 interface User {
-  id: string;
   name: string;
   email: string;
-  role?: string;
-  // Adicione outros campos que vêm no token
+  role: string;
+  isAdmin: boolean;
 }
 
 interface Token {
@@ -41,19 +40,16 @@ export const useAuth = create<AuthState>()(
         try {
           const decoded = jwtDecode<any>(token);
 
-          // TEMPORÁRIO - para ver TODOS os campos do JWT
-          console.log("Campos disponíveis no JWT:", Object.keys(decoded));
-          console.log("JWT completo:", decoded);
-
-          const email = decoded.id; // Sabemos que id contém o email
-          const name = decoded.name || decoded.username || email?.split("@")[0];
+          const email = decoded.sub || decoded.email;
+          const name = decoded.name || email?.split("@")[0] || "Usuário";
+          const role = decoded.role || "USER";
+          const isAdmin = decoded.role === "ADMIN";
 
           return {
-            id: email,
-            name:
-              name === "Temp Name" ? email?.split("@")[0] || "Usuário" : name,
-            email: email,
-            role: decoded.role || "user",
+            name: name,
+            email: email || "",
+            role: role,
+            isAdmin,
           };
         } catch (error) {
           console.error("Erro ao decodificar token:", error);

@@ -3,22 +3,21 @@ import {
   ArchiveX,
   ArrowLeftRight,
   BookMarked,
-  LogOut,
   ShoppingBasket,
   User,
 } from "lucide-react";
-import logo from "../assets/logo.png";
+import logo from "../../assets/logo.png";
 
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "./ui/sidebar";
+} from "../ui/sidebar";
+import { FooterSiderBar } from "./footer";
 import { useAuth } from "@/hooks/useAuth";
 const items = [
   {
@@ -38,7 +37,7 @@ const items = [
   },
   {
     title: "Movimentos",
-    url: "/movimenets",
+    url: "/movements",
     icon: ArrowLeftRight,
   },
   {
@@ -54,7 +53,7 @@ const items = [
 ];
 
 export function SidebarCustom() {
-  const { logout } = useAuth();
+  const { user } = useAuth();
 
   return (
     <Sidebar>
@@ -67,31 +66,28 @@ export function SidebarCustom() {
           />
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon className="w-5 h-5" />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map((item) => {
+                if (item.title === "Usuários" && !user?.isAdmin) {
+                  return null;
+                }
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <a href={item.url}>
+                        <item.icon className="w-5 h-5" />
+                        <span>{item.title}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={logout}>
-              <LogOut className="w-5 h-5" />
-              Sair
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
+      <FooterSiderBar />
     </Sidebar>
   );
 }
