@@ -226,6 +226,7 @@ export function Categories() {
                 <TableHead>Nome</TableHead>
                 <TableHead>Tamanho</TableHead>
                 <TableHead>Embalagem</TableHead>
+                <TableHead>Nº de produtos</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -247,6 +248,7 @@ export function Categories() {
                     </TableCell>
                     <TableCell>{category.size}</TableCell>
                     <TableCell>{category.packaging}</TableCell>
+                    <TableCell>{category.productCount}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
                         <EditCategoryModal

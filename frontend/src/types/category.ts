@@ -3,6 +3,7 @@ export interface Category {
   name: string;
   size: string;
   packaging: string;
+  productCount: number;
 }
 
 export interface CreateCategoryData {
