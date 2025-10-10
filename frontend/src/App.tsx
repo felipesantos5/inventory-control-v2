@@ -29,7 +29,7 @@ function App() {
         <Route path="/categories" element={<Categories />} />
         <Route path="/products" element={<Products />} />
         <Route path="/stock" element={<Stock />} />
-        <Route path="/movimenets" element={<Movements />} />
+        <Route path="/movements" element={<Movements />} />
         <Route path="/low-stock" element={<LowStock />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/" element={<Navigate to="/products" />} />
