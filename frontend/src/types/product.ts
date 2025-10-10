@@ -6,8 +6,7 @@ export interface Product {
   quantityInStock: number;
   minStockQuantity: number;
   maxStockQuantity: number;
-  categoryId: number;
-  category?: {
+  category: {
     id: string;
     name: string;
   };
