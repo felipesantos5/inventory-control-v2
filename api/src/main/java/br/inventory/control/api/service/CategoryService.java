@@ -4,6 +4,7 @@ import br.inventory.control.api.dto.CategoryDTO;
 import br.inventory.control.api.exception.ResourceNotFoundException;
 import br.inventory.control.api.model.Category;
 import br.inventory.control.api.repository.CategoryRepository;
+import br.inventory.control.api.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     @Transactional
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
@@ -26,7 +28,7 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public List<CategoryDTO> getAllCategories() {
-        return categoryRepository.findAll().stream()
+        return categoryRepository.findAllByOrderByNameAsc().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
@@ -65,6 +67,7 @@ public class CategoryService {
         dto.setName(category.getName());
         dto.setSize(category.getSize());
         dto.setPackaging(category.getPackaging());
+        dto.setProductCount(productRepository.countByCategory(category));
         return dto;
     }
 
