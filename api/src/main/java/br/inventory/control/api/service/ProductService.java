@@ -62,7 +62,7 @@ public class ProductService {
 
     @Transactional
     public ProductDTO createProduct(ProductDTO productDTO) {
-        Category category = categoryRepository.findById(productDTO.getCategory().getId())
+        Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + productDTO.getCategory().getId()));
         checkPermission(category);
         Product product = toEntity(productDTO);
@@ -99,6 +99,7 @@ public class ProductService {
         categoryInfo.setId(product.getCategory().getId());
         categoryInfo.setName(product.getCategory().getName());
         dto.setCategory(categoryInfo);
+        dto.setCategoryId(product.getCategory().getId());
 
         return dto;
     }
@@ -112,5 +113,30 @@ public class ProductService {
         product.setMinStockQuantity(dto.getMinStockQuantity());
         product.setMaxStockQuantity(dto.getMaxStockQuantity());
         return product;
+    }
+
+    @Transactional
+    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+
+        checkPermission(product.getCategory());
+
+        product.setName(productDTO.getName());
+        product.setUnitPrice(productDTO.getUnitPrice());
+        product.setUnitOfMeasure(productDTO.getUnitOfMeasure());
+        product.setQuantityInStock(productDTO.getQuantityInStock());
+        product.setMinStockQuantity(productDTO.getMinStockQuantity());
+        product.setMaxStockQuantity(productDTO.getMaxStockQuantity());
+
+        if (productDTO.getCategoryId() != null) {
+            Category category = categoryRepository.findById(productDTO.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + productDTO.getCategoryId()));
+            checkPermission(category);
+            product.setCategory(category);
+        }
+
+        Product updatedProduct = productRepository.save(product);
+        return toDTO(updatedProduct);
     }
 }
