@@ -3,6 +3,8 @@ package br.inventory.control.api.service;
 import br.inventory.control.api.dto.CategoryDTO;
 import br.inventory.control.api.exception.ResourceNotFoundException;
 import br.inventory.control.api.model.Category;
+import br.inventory.control.api.model.Role;
+import br.inventory.control.api.model.User;
 import br.inventory.control.api.repository.CategoryRepository;
 import br.inventory.control.api.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+    private final UserService userService;
 
     @Transactional
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
@@ -31,6 +34,18 @@ public class CategoryService {
         return categoryRepository.findAllByOrderByNameAsc().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryDTO> getAllCategoriesForCurrentUser() {
+        User currentUser = userService.getAuthenticatedUser();
+        if (currentUser.getRole() == Role.ADMIN || currentUser.getAllowedCategories().isEmpty()) {
+            return getAllCategories();
+        } else {
+            return currentUser.getAllowedCategories().stream()
+                    .map(this::toDTO)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Transactional(readOnly = true)
