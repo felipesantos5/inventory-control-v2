@@ -1,6 +1,5 @@
 package br.inventory.control.api.service;
 
-import br.inventory.control.api.dto.CategoryDTO;
 import br.inventory.control.api.dto.UserDTO;
 import br.inventory.control.api.exception.ResourceNotFoundException;
 import br.inventory.control.api.model.Category;
@@ -56,21 +55,6 @@ public class UserService {
 
         refreshTokenRepository.deleteByUser(user);
         userRepository.deleteById(id);
-    }
-
-    @Transactional
-    public Set<CategoryDTO> getMyCategories() {
-        User user = getAuthenticatedUser();
-        return user.getAllowedCategories().stream()
-                .map(category -> {
-                    CategoryDTO dto = new CategoryDTO();
-                    dto.setId(category.getId());
-                    dto.setName(category.getName());
-                    dto.setSize(category.getSize());
-                    dto.setPackaging(category.getPackaging());
-                    return dto;
-                })
-                .collect(Collectors.toSet());
     }
 
     public User getAuthenticatedUser() {
