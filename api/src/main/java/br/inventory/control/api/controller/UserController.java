@@ -1,6 +1,5 @@
 package br.inventory.control.api.controller;
 
-import br.inventory.control.api.dto.CategoryDTO;
 import br.inventory.control.api.dto.UserDTO;
 import br.inventory.control.api.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/users")
@@ -55,14 +53,5 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
-    }
-
-    @Operation(summary = "Get my categories", description = "Retrieves the categories associated with the authenticated employee.")
-    @ApiResponse(responseCode = "200", description = "Categories listed successfully")
-    @ApiResponse(responseCode = "403", description = "Access denied")
-    @GetMapping("/my-categories")
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
-    public ResponseEntity<Set<CategoryDTO>> getMyCategories() {
-        return ResponseEntity.ok(userService.getMyCategories());
     }
 }
