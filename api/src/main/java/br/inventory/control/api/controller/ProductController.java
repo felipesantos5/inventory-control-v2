@@ -59,4 +59,13 @@ public class ProductController {
         productService.adjustAllPrices(priceAdjustmentDTO);
         return ResponseEntity.ok("Product prices adjusted successfully by " + priceAdjustmentDTO.getPercentage() + "%.");
     }
+
+    @Operation(summary = "Update an existing product")
+    @ApiResponse(responseCode = "200", description = "Product updated successfully")
+    @ApiResponse(responseCode = "404", description = "Product not found")
+    @ApiResponse(responseCode = "403", description = "Access denied")
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok(productService.updateProduct(id, productDTO));
+    }
 }

@@ -13,6 +13,7 @@ public class ProductDTO {
     private int quantityInStock;
     private int minStockQuantity;
     private int maxStockQuantity;
+    private Long categoryId;
     private CategoryInfo category;
     private List<StockMovementResponseDTO> movements;
 
@@ -21,4 +22,5 @@ public class ProductDTO {
         private Long id;
         private String name;
     }
+
 }

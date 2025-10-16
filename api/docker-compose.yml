@@ -1,6 +1,7 @@
-version: "3.8"
+version: '3.8'
 
 services:
+
   db:
     image: postgres:16-alpine
     container_name: inventory_db
@@ -13,8 +14,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test:
-        ["CMD-SHELL", "pg_isready -U inventory_admin -d inventory_control_db"]
+      test: [ "CMD-SHELL", "pg_isready -U inventory_admin -d inventory_control_db" ]
       interval: 10s
       timeout: 5s
       retries: 5

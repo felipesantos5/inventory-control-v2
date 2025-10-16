@@ -47,7 +47,6 @@ public class User implements UserDetails {
         return email;
     }
 
-    // Métodos do UserDetails que podemos deixar como true por padrão
     @Override
     public boolean isAccountNonExpired() { return true; }
     @Override

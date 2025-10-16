@@ -7,12 +7,13 @@ import br.inventory.control.api.model.Category;
 import br.inventory.control.api.model.Role;
 import br.inventory.control.api.model.User;
 import br.inventory.control.api.repository.CategoryRepository;
+import br.inventory.control.api.repository.RefreshTokenRepository;
 import br.inventory.control.api.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,8 +27,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    @Transactional
     public UserDTO createUser(UserDTO userDTO) {
         User user = new User();
         user.setName(userDTO.getName());
@@ -44,20 +45,20 @@ public class UserService {
         return toDTO(savedUser);
     }
 
-    @Transactional(readOnly = true)
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     @Transactional
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("User not found with id: " + id);
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        refreshTokenRepository.deleteByUser(user);
         userRepository.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Set<CategoryDTO> getMyCategories() {
         User user = getAuthenticatedUser();
         return user.getAllowedCategories().stream()
