@@ -24,7 +24,6 @@ export const FooterSiderBar = () => {
               </Avatar>
               <p className="mt-1">{user?.name}</p>
             </div>
-
             <LogOut className="w-5 h-5" />
           </SidebarMenuButton>
         </SidebarMenuItem>

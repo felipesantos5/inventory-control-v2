@@ -55,7 +55,6 @@ export function EditCategoryModal({
     },
   });
 
-  // Atualiza os valores do form quando a categoria muda
   useEffect(() => {
     form.reset({
       name: category.name,

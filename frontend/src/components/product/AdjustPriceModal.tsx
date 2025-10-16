@@ -131,7 +131,7 @@ export function AdjustPriceModal({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh]">
+      <DialogContent className="sm:max-w-[600px] ">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Calculator className="h-5 w-5" />
@@ -219,7 +219,7 @@ export function AdjustPriceModal({
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="gap-4">
             <CardHeader>
               <CardTitle className="text-lg">Preview dos Produtos</CardTitle>
             </CardHeader>
@@ -247,7 +247,7 @@ export function AdjustPriceModal({
 
                     return (
                       <div key={product.id}>
-                        <div className="flex items-center justify-between py-2">
+                        <div className="flex items-center justify-between p-2">
                           <div className="flex-1">
                             <h4 className="font-medium text-sm">
                               {product.name}

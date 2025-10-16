@@ -7,7 +7,6 @@ import {
   User,
 } from "lucide-react";
 import logo from "../../assets/logo.png";
-
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +18,8 @@ import {
 } from "../ui/sidebar";
 import { FooterSiderBar } from "./footer";
 import { useAuth } from "@/hooks/useAuth";
+import { NavLink, useLocation } from "react-router-dom";
+
 const items = [
   {
     title: "Produtos",
@@ -55,6 +56,8 @@ const items = [
 export function SidebarCustom() {
   const { user } = useAuth();
 
+  const location = useLocation();
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -70,14 +73,26 @@ export function SidebarCustom() {
                 if (item.title === "Usuários" && !user?.isAdmin) {
                   return null;
                 }
-
+                const isActive = location.pathname === item.url;
                 return (
-                  <SidebarMenuItem key={item.title}>
+                  <SidebarMenuItem
+                    key={item.title}
+                    className={`${isActive ? "bg-sidebar-accent" : ""}`}
+                  >
                     <SidebarMenuButton asChild>
-                      <a href={item.url}>
+                      <NavLink
+                        to={item.url}
+                        className={({ isActive }) =>
+                          `flex items-center w-full p-2 gap-2 rounded-md ${
+                            isActive
+                              ? "bg-blue-500 text-blue-700"
+                              : "hover:bg-gray-100"
+                          }`
+                        }
+                      >
                         <item.icon className="w-5 h-5" />
                         <span>{item.title}</span>
-                      </a>
+                      </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -86,7 +101,6 @@ export function SidebarCustom() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-
       <FooterSiderBar />
     </Sidebar>
   );
