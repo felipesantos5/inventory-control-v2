@@ -139,4 +139,12 @@ public class ProductService {
         Product updatedProduct = productRepository.save(product);
         return toDTO(updatedProduct);
     }
+
+    @Transactional
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        checkPermission(product.getCategory());
+        productRepository.delete(product);
+    }
 }
