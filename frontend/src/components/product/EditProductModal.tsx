@@ -38,11 +38,11 @@ const productSchema = z.object({
   maxStockQuantity: z
     .number()
     .min(0, "Estoque máximo deve ser maior ou igual a 0"),
-  categoryId: z.number().min(1, "Categoria é obrigatória"),
+  categoryId: z.number(),
 });
 
 interface EditProductModalProps {
-  product: Product;
+  product: CreateProductData;
   onUpdate: (updatedProduct: Product) => void;
   trigger?: React.ReactNode;
 }
@@ -83,7 +83,7 @@ export function EditProductModal({
   const handleUpdate = async (data: CreateProductData) => {
     try {
       setIsUpdating(true);
-      const updatedProduct = await productsService.update(product.id, data);
+      const updatedProduct = await productsService.update(product.id!, data);
       onUpdate(updatedProduct);
       setIsOpen(false);
       toast.success("Produto atualizado com sucesso");

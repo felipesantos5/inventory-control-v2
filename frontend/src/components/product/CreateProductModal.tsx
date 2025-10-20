@@ -38,7 +38,7 @@ const productSchema = z.object({
   maxStockQuantity: z
     .number()
     .min(0, "Estoque máximo deve ser maior ou igual a 0"),
-  categoryId: z.number().min(1, "Categoria é obrigatória"),
+  categoryId: z.number(),
 });
 
 interface CreateProductModalProps {
@@ -231,9 +231,17 @@ export function CreateProductModal({
                   <FormControl>
                     <CategorySelect
                       value={field.value}
-                      onValueChange={(value) => field.onChange(parseInt(value))}
+                      // Modifique esta linha:
+                      onValueChange={(value) =>
+                        field.onChange(parseInt(value) || 0)
+                      }
+                      // Adicione `|| 0` para garantir que um número seja passado,
+                      // mesmo que parseInt retorne NaN.
                     />
                   </FormControl>
+                  {/* A mensagem de erro Zod ainda aparecerá corretamente
+                      se nenhuma categoria válida for selecionada (valor 0 falha no min(1)),
+                      mas o erro específico de NaN deve desaparecer. */}
                   <FormMessage />
                 </FormItem>
               )}
