@@ -145,6 +145,9 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         checkPermission(product.getCategory());
+        
+        stockMovementRepository.deleteByProductId(id);
+        
         productRepository.delete(product);
     }
 }

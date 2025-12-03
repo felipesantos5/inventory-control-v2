@@ -10,6 +10,8 @@ import java.util.List;
 public interface StockMovementRepository extends JpaRepository<StockMovement, Long> {
     List<StockMovement> findByProductId(Long productId);
 
+    void deleteByProductId(Long productId);
+
     @Query("SELECT sm.product.name, COUNT(sm) as movementCount " +
             "FROM StockMovement sm " +
             "WHERE sm.type = br.inventory.control.api.model.MovementType.ENTRY " +
