@@ -3,6 +3,7 @@ export interface User {
   name: string;
   email: string;
   categoryIds: number[];
+  role: string;
 }
 
 export interface CreateUserRequest {

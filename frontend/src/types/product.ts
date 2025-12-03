@@ -13,6 +13,7 @@ export interface Product {
 }
 
 export interface CreateProductData {
+  id?: string;
   name: string;
   unitPrice: number;
   unitOfMeasure: string;
